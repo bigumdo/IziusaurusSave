@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b1da34e1b6c270428deee80c638bad2, type: 3}
+  m_Name: BGDTest
+  m_EditorClassIdentifier: 
+  bossName: "\uAC00\uC2DC \uBCF4\uC2A4"
+  phase1Patterns:
+  - {fileID: 11400000, guid: cdd0cae3b1c939a4281282ce167f9ab1, type: 2}
+  phaseChangePattern: {fileID: 11400000, guid: aceaf5432ccf6394ca691a461141a858, type: 2}
+  phase2Patterns: []
+  finalPhasePattern: {fileID: 11400000, guid: db2d33d02b796ed4c96adf921fe7c4e1, type: 2}
+  Phase1DialogKeyList:
+  - Boss1_Phase1End
+  Phase2DialogKeyList:
+  - Boss1_Phase2Start
+  FinalPhaseDialogKeyList:
+  - Boss1_Phase2End

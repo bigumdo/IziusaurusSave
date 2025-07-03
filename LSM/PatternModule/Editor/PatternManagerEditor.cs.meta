@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 6a48a7dd2dfc12b4d90ac7da93222e0b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_ViewDataDictionary: {instanceID: 0}
+  - visualAsset: {fileID: 9197481963319205126, guid: d9867c21d259bf84898319928eebc59f, type: 3}
+  - bossList: {fileID: 11400000, guid: 4b739bacb3065f248b8aa13bad596cd1, type: 2}
+  - patternList: {fileID: 11400000, guid: cd9ff2942ea051e409be17e197b43f18, type: 2}
+  - patternAsset: {fileID: 9197481963319205126, guid: af070d63a3a07cd43bb28514a91674b2, type: 3}
+  - bossAsset: {fileID: 9197481963319205126, guid: e8bae3dd8f7402d4c92000a03754f8ad, type: 3}
+  - patternInspecterAsset: {fileID: 9197481963319205126, guid: 6a7f8e4cab2af6246abcb0218a76f002, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
