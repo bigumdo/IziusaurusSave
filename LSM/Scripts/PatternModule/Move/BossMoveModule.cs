@@ -22,9 +22,9 @@ namespace YUI.PatternModules
         Vector3 _bottomLeft;
         Vector3 _topRight;
 
-        public override void Init(Boss boss)
+        public void Init()
         {
-            base.Init(boss);
+            _boss = BossManager.Instance.Boss;
             float viewDistance = Camera.main.transform.position.y;
 
             _bottomLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, viewDistance));
@@ -40,6 +40,7 @@ namespace YUI.PatternModules
 
         public override IEnumerator Execute()
         {
+            Init();
             int index = Mathf.Clamp(_selectTile - 1, 0, _horizontalTileCount * _verticalTileCount - 1);
             int tileZ = index / _horizontalTileCount;
             int tileX = index % _horizontalTileCount;
@@ -51,7 +52,7 @@ namespace YUI.PatternModules
             yield return _boss.GetCompo<BossMover>().DOMove(worldPos, durationTime);
             CompleteActionExecute();
         }
-
+#if UNITY_EDITOR
         [ContextMenu("TEST")]
         public void Test()
         {
@@ -76,6 +77,7 @@ namespace YUI.PatternModules
 
             Vector3 worldPos = new Vector3(posX, 0, posZ);
         }
+#endif
     }
 }
 

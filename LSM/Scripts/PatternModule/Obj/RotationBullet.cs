@@ -30,9 +30,6 @@ namespace YUI.PatternModules
 
         protected override void Move()
         {
-            if (!_canMove)
-                return;
-
             if(_canRotation)
             {
                 Vector3 dir = (PlayerManager.Instance.Player.transform.position - transform.position).normalized;
@@ -52,5 +49,7 @@ namespace YUI.PatternModules
             yield return new WaitForSeconds(durationTime);
             _canRotation = false;
         }
+
+        
     }
 }

@@ -16,6 +16,7 @@ namespace YUI.PatternModules
 
         public override IEnumerator Execute()
         {
+            _boss = BossManager.Instance.Boss;
             Vector2 circle;
             Vector3 randomDir;
             Vector3 playerPos;
@@ -27,7 +28,7 @@ namespace YUI.PatternModules
                 LayerMask layer = 1 << LayerMask.NameToLayer("Wall");
                 if (!Physics2D.Raycast(playerPos, randomDir, _distance, layer))
                 {
-                    if(!Physics2D.BoxCast(playerPos + randomDir * _distance, _boss.GetComponent<BoxCollider2D>().size * 0.5f, 0, Vector2.zero,0,layer))
+                    if(!Physics2D.BoxCast(playerPos + randomDir * _distance, _boss.Collider.size, 0, Vector2.zero,0,layer))
                     {
                         Vector3 targetPos = playerPos + randomDir * _distance;
                         yield return _boss.GetCompo<BossMover>().DOMove(targetPos, _moveDrutation);

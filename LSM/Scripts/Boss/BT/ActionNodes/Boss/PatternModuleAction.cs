@@ -20,8 +20,8 @@ public partial class PatternModuleAction : Action
 
     protected override Status OnStart()
     {
-        if (_pattern == null)
-            _pattern = PatternManager.Instance.GetPhase1Pattern(PatternName.Value);
+        //if (_pattern == null)
+        //    _pattern = PatternManager.Instance.GetPhase1Pattern(PatternName.Value);
         Debug.Assert(_pattern != null, $"{PatternName.Value}°¡ ¾øÀ½");
         Boss.Value.StartCoroutine(PatternExecute());
         return Status.Running;

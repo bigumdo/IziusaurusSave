@@ -13,7 +13,7 @@ public partial class NextPageCondition : Condition
 
     public override bool IsTrue()
     {
-        return Boss.Value.CurrentPage != CurrentPhase.Value;
+        return Boss.Value.CurrentPage == CurrentPhase.Value;
     }
 
 

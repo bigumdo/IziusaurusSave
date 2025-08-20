@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using YUI.Agents.Bosses;
 using YUI.Agents.players;
 using YUI.Cores;
 using YUI.ObjPooling;
@@ -50,6 +51,7 @@ namespace YUI.PatternModules
 
         public override IEnumerator Execute()
         {
+            _boss = BossManager.Instance.Boss;
             List<CenterRotationBullet> bullets = new List<CenterRotationBullet>();
             float startAngle = -_startAngle;
             Vector3 playerPos;

@@ -13,46 +13,47 @@ namespace YUI.PatternModules
     {
         [Header("BulletSetting")]
         [Tooltip("스폰이 시작되는 각도 설정")]
-        [SerializeField] protected float _startAngle;
+        [SerializeField] private float _startAngle;
         [Tooltip("한번 발사하는 총알 간격 설정")]
-        [SerializeField] protected float _settingAngle;
-        [SerializeField] protected float _damage;
-        [SerializeField] protected float _speed;
-        [SerializeField] protected Vector2 _scale;
+        [SerializeField] private float _settingAngle;
+        [SerializeField] private float _damage;
+        [SerializeField] private float _speed;
+        [SerializeField] private Vector2 _scale;
 
         [Space]
         [Header("SpawnSetting")]
-        [SerializeField] protected float _spawnCnt;
+        [SerializeField] private float _spawnCnt;
         [Tooltip("Bullet을 보스로부터 얼마나 멀리 소환할지 설정")]
-        [SerializeField] protected float _spawnDistance;
+        [SerializeField] private float _spawnDistance;
         [Tooltip("Distance만큼 이동하는데 걸리는 시간 설정")]
-        [SerializeField] protected float _spawnMoveTime;
+        [SerializeField] private float _spawnMoveTime;
         [Tooltip("위치로 이동 후 Fade되는 시간을 설정")]
-        [SerializeField] protected float _spawnFadeTime;
+        [SerializeField] private float _spawnFadeTime;
         [Tooltip("각 소환되는데 걸리는 딜레이 설정")]
-        [SerializeField] protected float _spawnDelay;
+        [SerializeField] private float _spawnDelay;
 
 
         [Space]
         [Header("ShootingSetting")]
         [Tooltip("처음 발사하는데 걸리는 Delay 설정")]
-        [SerializeField] protected float _shootStartDelay;
+        [SerializeField] private float _shootStartDelay;
         [Tooltip("처음 발사 이후 발사하는데 걸리는 시간 설정")]
-        [SerializeField] protected float _shootCooldown;
+        [SerializeField] private float _shootCooldown;
         [Tooltip("한번에 발사하는 총알 갯수 설정")]
-        [SerializeField] protected float _shootCnt;
+        [SerializeField] private float _shootCnt;
 
         [Space]
         [Header("MoveSetting")]
         [Tooltip("보스가 이동 후 발사를 할지 설정")]
-        [SerializeField] protected bool _moveBeforeFire;
+        [SerializeField] private bool _moveBeforeFire;
         [Tooltip("보스가 이동하는데 걸리는 시간 설정")]
-        [SerializeField] protected float _moveDuration;
+        [SerializeField] private float _moveDuration;
 
         private const string _bulletName = "ThornBullet";
 
         public override IEnumerator Execute()
         {
+            _boss = BossManager.Instance.Boss;
             List<BossBaseBullet> bullets = new List<BossBaseBullet>();
             Vector3 playerPos = PlayerManager.Instance.Player.transform.position;
             for (int i =0;i<_spawnCnt; ++i)

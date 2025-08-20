@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Behavior;
 using Unity.VisualScripting;
@@ -13,13 +14,15 @@ namespace YUI.Agents.Bosses
         protected BehaviorGraphAgent _btAgent;
         public BossStateEnum CurrentPage { get; set; } = BossStateEnum.Phase1;
         public bool IsDamageable { get; private set; } = false;
+        public BoxCollider2D Collider { get; private set; }
         public Vector3 centerPos;
-        public BossPatternDataSO patternDataSO;
+        public BossSO patternDataSO;
 
         protected override void Awake()
         {
             base.Awake();
             _btAgent = GetComponent<BehaviorGraphAgent>();
+            Collider = GetComponent<BoxCollider2D>();
             _btAgent.enabled = false;
         }
 
@@ -45,6 +48,11 @@ namespace YUI.Agents.Bosses
             BlackboardVariable<T> variable = GetVariable<T>(variableName);
             Debug.Assert(variable != null, $"Variable {variableName} not found");
             variable.Value = value;
+        }
+
+        public virtual IEnumerator DeadEffect()
+        {
+            yield return null;
         }
 
         public void SetDamageable(bool value) => IsDamageable = value;

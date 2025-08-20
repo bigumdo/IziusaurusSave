@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2186892332726638415}
   - component: {fileID: -5064604161179587919}
-  - component: {fileID: 83505871350178572}
+  - component: {fileID: 280283640123086512}
   - component: {fileID: 830634751879478040}
   m_Layer: 9
   m_Name: ThornBullet
@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2117129823825079888}
@@ -50,8 +50,8 @@ MonoBehaviour:
   type: ThornBullet
   _speed: 0
   _damage: 0
---- !u!61 &83505871350178572
-BoxCollider2D:
+--- !u!58 &280283640123086512
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -85,17 +85,7 @@ BoxCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: -0.1, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 0.6, y: 0.5}
-  m_EdgeRadius: 0
+  m_Radius: 0.14
 --- !u!50 &830634751879478040
 Rigidbody2D:
   serializedVersion: 5
@@ -151,7 +141,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 2, z: 1}
+  m_LocalScale: {x: 1, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2186892332726638415}
@@ -199,7 +189,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: -1975284240, guid: 67e31b5e0b4b8774a990c6df10f32cb1, type: 3}
   m_Color: {r: 1, g: 0, b: 0.96094704, a: 1}
   m_FlipX: 0
@@ -221,7 +211,7 @@ Animator:
   m_GameObject: {fileID: 4604354754257938874}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4aef735ce0086394f8c288f64092ebc2, type: 2}
+  m_Controller: {fileID: 9100000, guid: b0562374df06dfd41a64b9328e38114d, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

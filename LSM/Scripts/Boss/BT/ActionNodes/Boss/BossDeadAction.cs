@@ -12,7 +12,7 @@ public partial class BossDeadAction : Action
 
     protected override Status OnStart()
     {
-        //BossManager.Instance.BossDeadPlay();
+        BossManager.Instance.BossDeadPlay();
         return Status.Success;
     }
 

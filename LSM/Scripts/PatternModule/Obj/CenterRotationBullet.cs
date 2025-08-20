@@ -38,14 +38,16 @@ namespace YUI.PatternModules
         public override void SetCanMove(bool canMove = false)
         {
             base.SetCanMove(canMove);
-            ChangeRotationSpeed(_changRotationSpeed, _changeTime);
+            StartCoroutine(ChangeRotationSpeedCoroutine(_changRotationSpeed, _changeTime));
         }
 
-        void Update()
+        protected override void FixedUpdate()
         {
-            if (!_canMove)
-                return;
+            base.FixedUpdate();
+        }
 
+        protected override void Move()
+        {
             transform.right = (_playerPos - transform.position).normalized;
             _angle += (_rotationSpeed) * Time.deltaTime;
             float rad = _angle * Mathf.Deg2Rad;
@@ -54,12 +56,7 @@ namespace YUI.PatternModules
             transform.position = new Vector3(x, y, 0);
             _radius -= _speed * Time.deltaTime;
             if (_radius <= 0)
-                PoolingManager.Instance.Push(this,true);
-        }
-
-        private void ChangeRotationSpeed(float changeSpeed, float time)
-        {
-            StartCoroutine(ChangeRotationSpeedCoroutine(changeSpeed, time));
+                PoolingManager.Instance.Push(this, true);
         }
 
         private IEnumerator ChangeRotationSpeedCoroutine(float targetSpeed, float duration)
@@ -91,7 +88,7 @@ namespace YUI.PatternModules
             {
                 _canAttack = false;
                 CameraManager.Instance.ShakeCamera(2f, 2, 0.15f);
-                player.GetCompo<AgentHealth>(true).ApplyDamage(_damage);
+                player.GetCompo<PlayerHealth>(true).ApplyDamage(_damage);
             }
         }
     }

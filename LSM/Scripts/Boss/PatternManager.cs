@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using YUI.Bullets.WordBullets;
 using YUI.Cores;
 using YUI.PatternModules;
 
@@ -7,108 +10,62 @@ namespace YUI.Agents.Bosses
 {
     public class PatternManager : MonoSingleton<PatternManager>
     {
-        private BossPatternDataSO _patternList;
-
-        private Dictionary<string, PatternSO> _phase1PatternDictionary;
-        private Dictionary<string, PatternSO> _phase2PatternDictionary;
-        private string _lastPatternName;
-        private int _duplicatedPatternCnt;
-
         [HideInInspector] public bool isExecutingPattern;
 
-        public void PattternSetting(BossPatternDataSO patternDataSO)
+        [SerializeField] private WordBulletSpawner _leftWordBulletSpawner;
+        [SerializeField] private WordBulletSpawner _rightWordBulletSpawner;
+        private BossSO _bossSO;
+        private Dictionary<string, List<PatternGroupSO>> _patternGroupDictionary;
+        private Dictionary<string, List<string>> _patternDialogKeyList;
+        private PatternGroupSO[] patternGroups;
+
+        public void PattternSetting(BossSO bossSO)
         {
-            _patternList = patternDataSO;
-            _phase1PatternDictionary = new Dictionary<string, PatternSO>();
-            _phase2PatternDictionary = new Dictionary<string, PatternSO>();
-            Debug.Assert(patternDataSO.phase1Patterns != null, "_phase1PatternDictionary is not present");
-            Debug.Assert(patternDataSO.phase2Patterns != null, "_phase2PatternDictionary is not present");
-            Debug.Assert(patternDataSO.finalPhasePattern != null, "finalPhasePattern is not present");
-            patternDataSO.phase1Patterns.ForEach(x => _phase1PatternDictionary.Add(x.patternName, x));
-            patternDataSO.phase2Patterns.ForEach(x => _phase2PatternDictionary.Add(x.patternName, x));
+            _bossSO = bossSO;
+            _patternGroupDictionary = new Dictionary<string, List<PatternGroupSO>>();
+            _patternDialogKeyList = new Dictionary<string, List<string>>();
+            _bossSO.patternDatas.ForEach(x => _patternGroupDictionary.Add(x.patternName, x.GetPatternGroup()));
+            _bossSO.dialogDatas.ForEach(x => _patternDialogKeyList.Add(x.dialogName, x.bossDialogKeyList));
             ModuleInit();
         }
 
         private void ModuleInit()
         {
-            foreach (var x in _phase1PatternDictionary.Values)
-                x.Init(BossManager.Instance.Boss);
-            foreach (var x in _phase2PatternDictionary.Values)
-                x.Init(BossManager.Instance.Boss);
-            _patternList.finalPhasePattern.Init(BossManager.Instance.Boss);
-            _patternList.phaseChangePattern.Init(BossManager.Instance.Boss);
+            
         }
 
-        public List<string> GetDialog(BossStateEnum currentPhsae)
+        public PatternSO RandomPattern(string patternName)
         {
-            switch (currentPhsae)
+            List<PatternGroupSO> groups = _patternGroupDictionary[patternName];
+            float totalWeight = groups.Where(g => g.isUnlockedPattern && g.canPattern).Sum(g => g.weight);
+
+            if (totalWeight == 0)
             {
-                case BossStateEnum.Phase1:
-                    return _patternList.Phase1DialogKeyList;
-                case BossStateEnum.Phase2:
-                    return _patternList.Phase2DialogKeyList;
-                case BossStateEnum.FinalPhase:
-                    return _patternList.FinalPhaseDialogKeyList;
+                return null;
             }
-            return null;
-        }
-
-        public PatternSO GetRandomPattern(BossStateEnum currentState)
-        {
-            switch (currentState)
+            float rand = Random.Range(0f, totalWeight);
+            float sum = 0f;
+            foreach (var g in groups)
             {
-                case BossStateEnum.Phase1:
-                    return GetPattern(_phase1PatternDictionary);
-                case BossStateEnum.Phase2:
-                    return GetPattern(_phase2PatternDictionary);
-                case BossStateEnum.FinalPhase:
-                    return _patternList.finalPhasePattern;
+                sum += g.weight;
+                if (rand <= sum && g.canPattern)
+                {
+                    return g.RandomSelectPattern();
+                }
             }
-            return null;
+            return null; // fallback
         }
 
-        private PatternSO GetPattern(Dictionary<string, PatternSO> patternDictionary)
+
+        public List<string> GetDialog(string dialogName)
         {
-            List<PatternSO> patterns = new List<PatternSO>(patternDictionary.Values);
-            int randomCnt = Random.Range(0, patterns.Count);
-            if (_lastPatternName == patterns[randomCnt].patternName)
-                _duplicatedPatternCnt++;
-            else
-                _duplicatedPatternCnt = 0;
-            if (_duplicatedPatternCnt >= 3)
-                randomCnt = Mathf.Clamp(randomCnt > 0 ? --randomCnt : ++randomCnt,0,patterns.Count - 1);
-            _lastPatternName = patterns[randomCnt].patternName;
-            return patterns[randomCnt];
+            return _patternDialogKeyList[dialogName];
         }
 
-        public PatternSO GetPhase1Pattern(string patternName)
+        public void SetWordSpawner(bool value)
         {
-            if (_phase1PatternDictionary.TryGetValue(patternName, out PatternSO pattern))
-            {
-                return pattern;
-            }
-
-            return default;
-        }
-
-        public PatternSO GetPhase2Pattern(string patternName)
-        {
-            if (_phase2PatternDictionary.TryGetValue(patternName, out PatternSO pattern))
-            {
-                return pattern;
-            }
-
-            return default;
-        }
-
-        public PatternSO GetPhaseChagnePattern()
-        {
-            return _patternList.phaseChangePattern;
-        }
-
-        public PatternSO GetFinalPhasePattern()
-        {
-            return _patternList.finalPhasePattern;
+            _leftWordBulletSpawner.SetShootable(value);
+            _rightWordBulletSpawner.SetShootable(value);
         }
     }
 }

@@ -7,6 +7,8 @@ using YUI.Agents.players;
 using YUI.Cores;
 using YUI.ObjPooling;
 using YUI.PatternModules;
+using YUI.Rooms;
+using YUI.UI.CompleteUI;
 
 namespace YUI.Agents.Bosses
 {
@@ -63,15 +65,6 @@ namespace YUI.Agents.Bosses
                 OnCounterAttackEvent?.Invoke();
             }
         }
-
-        private void Update()
-        {
-            if (Keyboard.current.nKey.wasPressedThisFrame)
-            {
-                _boss.GetCompo<AgentHealth>(true).ApplyDamage(1000);
-            }
-        }
-
         public void BossDeadPlay()
         {
             _boss.transform.position = startPos;
@@ -81,6 +74,7 @@ namespace YUI.Agents.Bosses
             PlayerManager.Instance.Player.InputReader.SetSlowMode(true);
             PlayerManager.Instance.Player.InputReader.Enable(false);
         }
+
         private IEnumerator BossDeadEffectPlay()
         {
             PoolableMono[] poolables = GameObject.FindObjectsByType<PoolableMono>(FindObjectsSortMode.None);
@@ -88,6 +82,7 @@ namespace YUI.Agents.Bosses
             {
                 PoolingManager.Instance.Push(p);
             }
+            _particle.transform.position = _boss.transform.position;
             _particle.gameObject.SetActive(true);
             _particle.Play();
             CameraManager.Instance.ShakeCamera(1, 8, 0.2f);
@@ -103,19 +98,52 @@ namespace YUI.Agents.Bosses
             CameraManager.Instance.SetFadeColor(Color.white);
             _particle.gameObject.SetActive(false);
             CameraManager.Instance.FadeOut(0);
-            foreach(CounterRoot obj in counterObjList)
+            if (_boss is Griv)
+            {
+                (GameManager.Instance.GetCurrentRoom() as BossRoom).ActiveTileMap(true, "ROOM");
+                (GameManager.Instance.GetCurrentRoom() as BossRoom).ActiveTileMap(false, "BATTLE");
+                PlayerManager.Instance.Player.GetCompo<PlayerMover>().SetMoveType(PlayerMoveType.NORMAL);
+                PlayerManager.Instance.Player.transform.position = Vector3.zero;
+                PlayerManager.Instance.Player.GetCompo<PlayerHealth>().PlayerHeal(100000);
+                UIManager.Instance.GetUI<CompleteCanvas>().Open();
+            }
+            foreach (CounterRoot obj in counterObjList)
             {
                 PoolingManager.Instance.Push(obj,true);
             }
-            Instantiate(_reward,startPos,Quaternion.Euler(90,0,0));
+            //Instantiate(_reward,startPos,Quaternion.Euler(90,0,0));
             GameManager.Instance.IsBattle = false;
             Destroy(_boss.gameObject);
             yield return new WaitForSeconds(1f);
             CameraManager.Instance.FadeIn(1f, () => CameraManager.Instance.SetFadeColor(Color.black));
             yield return new WaitForSeconds(1f);
-            PlayerManager.Instance.Player.InputReader.SetSlowMode(false);
-            PlayerManager.Instance.Player.InputReader.Enable(true);
+            PlayerManager.Instance.Player.InputReader.SetSlowMode(true);
+            UIManager.Instance.SetBossGaugeVisibility(false);
+
             _boss = null;
         }
+        public void BossChangeState(TutorialBossStateEnum changeState)
+        {
+            _boss.GetVariable<TutorialStateChangeEvent>("TutorialStateChangeEvent").Value.SendEventMessage(changeState);
+        }
+
+        public void BossChangeState(BossStateEnum changeState)
+        {
+            _boss.GetVariable<PhaseChangeEvent>("PhaseChangeEvent").Value.SendEventMessage(changeState);
+        }
+
+        public int GetCounterRootCount()
+        {
+            return counterObjList.Count;
+        }
+
+
+#if UNITY_EDITOR
+        private void Update()
+        {
+            if (Keyboard.current.nKey.wasPressedThisFrame)
+                _boss.GetCompo<BossHealth>().ApplyDamage(1000000);
+        }
+#endif
     }
 }

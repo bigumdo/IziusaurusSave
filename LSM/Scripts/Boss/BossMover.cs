@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using YUI.Agents.AfterImages;
 using YUI.Cores;
 using YUI.StatSystem;
 
@@ -7,6 +9,8 @@ namespace YUI.Agents.Bosses
 {
     public class BossMover : AgentMover
     {
+        public Vector2 moveDirection;
+
         public override void FixedUpdate()
         {
             MoveCharacter();
@@ -25,7 +29,8 @@ namespace YUI.Agents.Bosses
         {
             float time = 0;
             Vector3 startPos = _agent.transform.position;
-            _agent.GetCompo<AgentAfterimage>().Play();
+            _agent.GetCompo<AgentAfterImage>(true).Play();
+            moveDirection = (endPos - startPos).normalized;
             SoundManager.Instance.PlaySound("SFX_Boss_Move");
             while (time < duration)
             {
@@ -34,26 +39,26 @@ namespace YUI.Agents.Bosses
                 _agent.transform.position = Vector3.Lerp(startPos, endPos, Mathf.Sin((time / duration * Mathf.PI) / 2));
                 yield return null;
             }
-            _agent.GetCompo<AgentAfterimage>().Stop();
+            _agent.GetCompo<AgentAfterImage>().Stop();
 
             _agent.transform.position = endPos;
         }
 
         public IEnumerator DOFade(float alpha, float duration)
         {
-            float startAlpha = _renderer.SpriteRenderer.color.a;
+            float startAlpha = _renderer.Renderer.color.a;
             float time = 0;
-            Color color = _renderer.SpriteRenderer.color;
+            Color color = _renderer.Renderer.color;
 
             while (time < duration)
             {
                 time += Time.deltaTime;
                 color.a = Mathf.Lerp(startAlpha, alpha, time / duration);
-                _renderer.SpriteRenderer.color = color;
+                _renderer.Renderer.color = color;
                 yield return null;
             }
             color.a = alpha;
-            _renderer.SpriteRenderer.color = color;
+            _renderer.Renderer.color = color;
         }
     }
 }

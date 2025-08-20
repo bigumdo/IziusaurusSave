@@ -21,8 +21,8 @@ public partial class BossPhaseChangePatternAction : Action
 
     protected override Status OnStart()
     {
-        _pattern = PatternManager.Instance.GetPhaseChagnePattern();
-        Debug.Assert(_pattern != null, $"{Pattern.Value}가 없음");
+        //_pattern = PatternManager.Instance.GetPhaseChagnePattern();
+        //Debug.Assert(_pattern != null, $"{Pattern.Value}가 없음");
         Boss.Value.StartCoroutine(PatternExecute());
         return Status.Running;
     }

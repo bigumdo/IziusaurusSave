@@ -12,6 +12,7 @@ namespace YUI.PatternModules
 
         public override IEnumerator Execute()
         {
+            _boss = BossManager.Instance.Boss;
             yield return _boss.GetCompo<BossMover>().DOMove(BossManager.Instance.startPos, _moveDrutation);
             CompleteActionExecute();
         }

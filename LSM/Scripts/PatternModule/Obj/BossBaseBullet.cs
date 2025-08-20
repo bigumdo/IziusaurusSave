@@ -34,7 +34,7 @@ namespace YUI.PatternModules
             _renderer = GetComponentInChildren<SpriteRenderer>();
         }
 
-        public virtual void SetObj(float speed, float damage, Vector2 scale)
+        public void SetObj(float speed, float damage, Vector2 scale)
         {
             _speed = speed;
             _damage = damage;
@@ -51,15 +51,14 @@ namespace YUI.PatternModules
 
         protected virtual void FixedUpdate()
         {
+            if (!GameManager.Instance.IsGmaeStop && !_canMove)
+                return;
             Move();
         }
 
         protected virtual void Move()
         {
-            if (_canMove)
-            {
-                _rbCompo.linearVelocity = transform.right * _speed;
-            }
+            _rbCompo.linearVelocity = transform.right * _speed;
         }
 
         #region Base
@@ -163,7 +162,7 @@ namespace YUI.PatternModules
             if (collision.TryGetComponent(out Player player))
             {
                 CameraManager.Instance.ShakeCamera(2f, 2, 0.15f);
-                player.GetCompo<AgentHealth>(true).ApplyDamage(_damage);
+                player.GetCompo<PlayerHealth>(true).ApplyDamage(_damage);
                 PoolingManager.Instance.Push(this, true);
             }
             if (collision.gameObject.layer == LayerMask.NameToLayer("BulletWall"))

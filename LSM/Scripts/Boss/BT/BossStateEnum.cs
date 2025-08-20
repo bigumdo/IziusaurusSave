@@ -9,3 +9,13 @@ public enum BossStateEnum
 	FinalPhase,
     Transition
 }
+
+[BlackboardEnum]
+public enum TutorialBossStateEnum
+{
+    None,
+    Attack1,
+    Attack2,
+    Counter,
+    Dead
+}

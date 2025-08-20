@@ -20,6 +20,11 @@ namespace YUI.SoundSystem
         {
             if (sound.type == soundType.BGM)
             {
+                if (SoundManager.Instance.bgmSound != null)
+                {
+                    PoolingManager.Instance.Push(SoundManager.Instance.bgmSound);
+                    SoundManager.Instance.bgmSound = this;
+                }
                 _audio.outputAudioMixerGroup = _bgmGroup;
                 _audio.clip = sound.clip;
                 _audio.volume = sound.volume;

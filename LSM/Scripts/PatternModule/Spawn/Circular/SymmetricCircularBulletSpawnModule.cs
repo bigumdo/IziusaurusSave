@@ -43,6 +43,7 @@ namespace YUI.PatternModules
 
         public override IEnumerator Execute()
         {
+            _boss = BossManager.Instance.Boss;
             _bullets = new List<BossBaseBullet>();
             _counterDir = -BossManager.Instance.counterDir;
             yield return _boss.StartCoroutine(Spawn());

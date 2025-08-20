@@ -62,6 +62,7 @@ namespace YUI
 
         public override IEnumerator Execute()
         {
+            _boss = BossManager.Instance.Boss;
             bullets = new List<BossBaseBullet>();
             float startAngle = -_startAngle;
             for (int i = 0; i < _spawnCnt; ++i)

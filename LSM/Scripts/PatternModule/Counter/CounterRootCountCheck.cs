@@ -16,8 +16,6 @@ namespace YUI.PatternModules
             {
                 PlayerManager.Instance.Player.GetCompo<AgentHealth>(true).ApplyDamage(99999999);
             }
-            else
-                Debug.Log("»ýÁ¸");
 
             CompleteActionExecute();
             yield return null;

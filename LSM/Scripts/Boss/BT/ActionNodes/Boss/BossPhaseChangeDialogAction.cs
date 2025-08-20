@@ -12,11 +12,11 @@ using YUI.UI.DialogSystem;
 using System.Collections;
 
 [Serializable, GeneratePropertyBag]
-[NodeDescription(name: "BossPhaseChangeDialog", story: "[Boss] PhaseChange Dialog [CurrentPhase]", category: "Action", id: "e096a73f6813c893abbe4c986486eec6")]
+[NodeDescription(name: "BossPhaseChangeDialog", story: "[Boss] [DialogkeyName] Dialog", category: "Action", id: "e096a73f6813c893abbe4c986486eec6")]
 public partial class BossPhaseChangeDialogAction : Action
 {
     [SerializeReference] public BlackboardVariable<Boss> Boss;
-    [SerializeReference] public BlackboardVariable<BossStateEnum> CurrentPhase;
+    [SerializeReference] public BlackboardVariable<string> DialogkeyName;
 
     private bool _isFinished;
 
@@ -32,7 +32,7 @@ public partial class BossPhaseChangeDialogAction : Action
     private IEnumerator Dialog()
     {
         List<DialogData> dialogDatas;
-        List<string> dialogKeyList = PatternManager.Instance.GetDialog(CurrentPhase.Value);
+        List<string> dialogKeyList = PatternManager.Instance.GetDialog(DialogkeyName.Value);
 
         for (int i = 0; i < dialogKeyList.Count; ++i)
         {

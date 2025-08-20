@@ -26,6 +26,7 @@ namespace YUI.PatternModules
         private List<BossBaseBullet> _bullets;
         public override IEnumerator Execute()
         {
+            _boss = BossManager.Instance.Boss;
             _bullets = new List<BossBaseBullet>();
             _sefetyDir = -BossManager.Instance.counterDir;
             yield return Spawn(true);

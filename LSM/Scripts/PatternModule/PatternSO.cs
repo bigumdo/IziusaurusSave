@@ -9,25 +9,15 @@ namespace YUI.PatternModules
     public class PatternStep
     {
         [SerializeField] private List<PatternModule> selectModules;
-        [HideInInspector] public List<PatternModule> modules;
         public bool isSequential = true;
         public float delay;
-
-        public void Init()
-        {
-            modules = new List<PatternModule>();
-            foreach (PatternModule i in selectModules)
-            {
-                modules.Add(i.Clone() as  PatternModule);
-            }
-        }
 
         public IEnumerator Execute(Boss boss)
         {
             if (isSequential)
             {
-                PatternManager.Instance.isExecutingPattern = true;
-                foreach (PatternModule m in modules)
+                //PatternManager.Instance.isExecutingPattern = true;
+                foreach (PatternModule m in selectModules)
                 {
                     boss.StartCoroutine(m.Execute());
                     yield return new WaitUntil(() => m.isComplete);
@@ -40,16 +30,15 @@ namespace YUI.PatternModules
             else
             {
                 List<PatternModule> toRemove = new List<PatternModule>();
-
-                foreach (PatternModule t in modules)
+                foreach (PatternModule t in selectModules)
                 {
                     boss.StartCoroutine((t.Execute()));
                 }
 
-                while (modules.Count > toRemove.Count)
+                while (selectModules.Count > toRemove.Count)
                 {
                     toRemove.Clear();
-                    foreach (PatternModule t in modules)
+                    foreach (PatternModule t in selectModules)
                     {
                         if (t.isComplete)
                         {
@@ -78,23 +67,38 @@ namespace YUI.PatternModules
         public bool shouldExecute = true;
         public List<PatternStep> patternSteps;
         public int repeatCnt;
-
-        public void Init() => patternSteps.ForEach(x => x.Init());
     }
 
     [CreateAssetMenu(fileName = "PatternSO", menuName = "SO/Boss/PatternSO")]
     public class PatternSO : ScriptableObject
     {
-        public string patternName;
+        public float coolTime;
+        public int weight;
         public List<PatternRepeat> patternRepeats;
-        [SerializeField] private float _delay;
 
-        private float finalPatternCheck;
+        [SerializeField] private float _delay;
+        public bool canPattern
+        {
+            get
+            {
+                if(_checkTime > 0)
+                {
+                    return _checkTime + coolTime < Time.time;
+                }
+                else
+                    return true;
+            }
+        }
+
+        private float _checkTime = 0;
+
+        private void OnDisable()
+        {
+            _checkTime = 0;
+        }
 
         public IEnumerator Execute(Boss boss)
         {
-            if (patternName == "FinalPattern")
-                finalPatternCheck = Time.time;
             PatternManager.Instance.isExecutingPattern = true;
             foreach (PatternRepeat pr in patternRepeats)
             {
@@ -121,18 +125,8 @@ namespace YUI.PatternModules
             }
 
             yield return new WaitForSeconds(_delay);
+            _checkTime = Time.time;
             PatternManager.Instance.isExecutingPattern = false;
-            if (patternName == "FinalPattern")
-                Debug.Log(Time.time - finalPatternCheck);
-        }
-
-        public void Init(Boss boss)
-        {
-            patternRepeats.ForEach(x => x.Init());
-            foreach(PatternRepeat r in patternRepeats)
-                foreach (PatternStep a in r.patternSteps)
-                    foreach (PatternModule m in a.modules)
-                        m.Init(boss);
         }
     }
 }

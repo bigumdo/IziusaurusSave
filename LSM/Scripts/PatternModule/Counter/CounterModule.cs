@@ -10,32 +10,20 @@ namespace YUI.PatternModules
     [CreateAssetMenu(fileName = "CounterModule", menuName = "SO/Boss/Module/Counter/CounterModule")]
     public class CounterModule : PatternModule
     {
-        [Tooltip("ī���� ���� �ð� ����")]
         [SerializeField] private float _counterDuration;
-        [Tooltip("ī���� ���� ���� ����")]
         [SerializeField] private float _counterAngle;
-        [Tooltip("ī���� ������ ���ʿ� ������ �ٰ��ΰ�")]
         [SerializeField] private float _stunDuration;
-        [Tooltip("ī���� ���� �Ÿ�")]
         [SerializeField] private float _distance;
-        [Tooltip("���н� ����� ��� ����")]
         [SerializeField] private PatternSO _failModule;
 
         private Vector3 _counterDir;
         private bool _isStunned;
         private BossCounterHead _counterHead;
 
-        public override void Init(Boss boss)
-        {
-            base.Init(boss);
-            if (_failModule != null)
-                _failModule.Init(boss);
-            _isStunned = false;
-            _counterHead = boss.GetCompo<BossCounterHead>();
-        }
-
         public override IEnumerator Execute()
         {
+            _boss = BossManager.Instance.Boss;
+            _counterHead = BossManager.Instance.Boss.GetCompo<BossCounterHead>();
             BossManager.Instance.OnCounterAttackEvent += CounterCheck;
             BossManager.Instance.OnCounterSuccessEvent += Success;
             _counterDir = BossManager.Instance.counterDir;
@@ -65,13 +53,10 @@ namespace YUI.PatternModules
             float dot = Vector3.Dot(_counterDir, playerPos);
             float angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
 
-            Debug.Log(distance <= _distance * 2.5f);
-            if (angle <= _counterAngle * 0.5f && distance <= _distance * 1.5f)
+            if (angle <= _counterAngle * 0.5f && distance <= _distance * 3f)
             {
                 _isStunned = true;
                 BossManager.Instance.Success();
-                Debug.Log("성공");
-
             }
         }
 
@@ -92,14 +77,19 @@ namespace YUI.PatternModules
             _boss.StartCoroutine(AttackableTime());
             CameraManager.Instance.ShakeCamera(10, 10, 0.1f);
             CameraManager.Instance.ShakeCamera(1, 2, 0.2f);
+            _boss.GetCompo<BossRenderer>().CounterHitEffect();
         }
 
         private IEnumerator AttackableTime()
         {
-            yield return _boss.GetCompo<BossRenderer>().CounterOff();
             yield return _counterHead.Fade(0);
+            _boss.StartCoroutine(_boss.GetCompo<BossRenderer>().CounterOff(BossColor.Confusion, 1.3f, _stunDuration));
+            float dissolveValue = _boss.GetCompo<BossRenderer>().Renderer.material.GetFloat("_PhaseDissolveValue");
+            _boss.StartCoroutine(_boss.GetCompo<BossRenderer>().PhaseDissolve(0));
             if (_stunDuration > 0)
-                yield return new WaitForSeconds(_stunDuration - 0.1f);
+                yield return new WaitForSeconds(_stunDuration);
+            yield return _boss.GetCompo<BossRenderer>().SetColor(BossColor.Base);
+            _boss.StartCoroutine(_boss.GetCompo<BossRenderer>().PhaseDissolve(dissolveValue));
             CompleteActionExecute();
         }
 
@@ -111,7 +101,7 @@ namespace YUI.PatternModules
             {
                 yield return _failModule.Execute(_boss);
             }
-            yield return _boss.GetCompo<BossRenderer>().CounterOff();
+            yield return _boss.GetCompo<BossRenderer>().CounterOff(BossColor.Base);
             CompleteActionExecute();
         }
         #endregion

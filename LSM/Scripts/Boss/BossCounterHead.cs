@@ -23,8 +23,11 @@ namespace YUI.Agents.Bosses
         public IEnumerator Fade(float alpha,float durationTime=0)
         {
             if (alpha == 1)
+            {
                 Instantiate(_testParticle, _boss.transform);
-            yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.5f);
+            }
+
             float time = 0;
             Color color = _renderer.color;
             float startAlpha = color.a;
